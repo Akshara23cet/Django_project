@@ -1,0 +1,21 @@
+{% extends 'patient/base.html' %}
+
+{% block content %}
+<h1>Welcome, {{ request.user.first_name }}!</h1>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Your Profile</h5>
+        <p><strong>Full Name:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
+        <p><strong>Email:</strong> {{ request.user.email }}</p>
+        <p><strong>Gender:</strong> {{ request.user.patient.gender }}</p>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Medical History</h5>
+        <p>{{ request.user.patient.medical_history|default:"No history available." }}</p>
+    </div>
+</div>
+{% endblock %}

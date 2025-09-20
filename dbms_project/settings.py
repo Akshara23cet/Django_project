@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts'
+    'accounts',
+    'patient',
+    'doctor',
 ]
 STATIC_URL = '/static/'
 
@@ -80,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'dbms_project',     # the DB name you just created
         'USER': 'postgres',          # your PostgreSQL username
-        'PASSWORD': '1234',  # your PostgreSQL password
+        'PASSWORD': 'postgres123',  # your PostgreSQL password
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -127,3 +129,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Redirect to login page if not authenticated
+LOGIN_URL = '/accounts/login/'
