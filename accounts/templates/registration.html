@@ -29,10 +29,10 @@
     <!-- Role selection -->
     <div class="role-select">
       <label>
-        <input type="radio" name="role" value="patient" checked onclick="toggleForm()"> Patient
+        <input type="radio" name="role-choice" value="patient" checked onclick="toggleForm()"> Patient
       </label>
       <label>
-        <input type="radio" name="role" value="doctor" onclick="toggleForm()"> Doctor
+        <input type="radio" name="role-choice" value="doctor" onclick="toggleForm()"> Doctor
       </label>
     </div>
 
@@ -42,7 +42,7 @@
 
       <!-- Common fields -->
       <div class="form-group">
-        <label>Username</label>
+        <label>Fullname</label>
         <input type="text" name="username" required>
       </div>
       <div class="form-group">
@@ -57,7 +57,7 @@
       <!-- Patient fields -->
       <div id="patient-fields">
         <div class="form-group">
-          <label>Full Name</label>
+          <label>Phone</label>
           <input type="text" name="patient_name">
         </div>
         <div class="form-group">
@@ -78,7 +78,7 @@
       <!-- Doctor fields -->
       <div id="doctor-fields" class="hidden">
         <div class="form-group">
-          <label>Full Name</label>
+          <label>Phone</label>
           <input type="text" name="doctor_name">
         </div>
         <div class="form-group">
@@ -91,28 +91,34 @@
         </div>
       </div>
 
+      <!-- Only ONE hidden field for role -->
+      <input type="hidden" name="role" id="role-input" value="patient">
+
       <button type="submit" class="btn">Register</button>
     </form>
 
     <div class="links">
-      Already have an account? <a href="{% url 'login' %}">Login here</a>
+      Already have an account? <a href="{% url 'login_page' %}">Login here</a>
     </div>
   </div>
 
   <script>
-    function toggleForm() {
-      const role = document.querySelector('input[name="role"]:checked').value;
-      const patientFields = document.getElementById("patient-fields");
-      const doctorFields = document.getElementById("doctor-fields");
+  function toggleForm() {
+    const role = document.querySelector('input[name="role-choice"]:checked').value;
+    const patientFields = document.getElementById("patient-fields");
+    const doctorFields = document.getElementById("doctor-fields");
 
-      if (role === "patient") {
-        patientFields.classList.remove("hidden");
-        doctorFields.classList.add("hidden");
-      } else {
-        patientFields.classList.add("hidden");
-        doctorFields.classList.remove("hidden");
-      }
+    if (role === "patient") {
+      patientFields.classList.remove("hidden");
+      doctorFields.classList.add("hidden");
+    } else {
+      patientFields.classList.add("hidden");
+      doctorFields.classList.remove("hidden");
     }
+
+    // Update hidden input so the role is submitted correctly
+    document.getElementById("role-input").value = role;
+  }
   </script>
 </body>
 </html>
