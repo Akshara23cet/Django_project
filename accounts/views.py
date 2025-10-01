@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from .models import CustomUser  # import your custom user model
+from django.contrib import messages
+from patient.models import Patient  # or DoctorDetails
 
 
-def registration_page(request):
+
+def registration_page(request)
     return render(request, 'registration.html')
 
 
