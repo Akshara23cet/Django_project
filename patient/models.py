@@ -1,10 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
+
 
 class Patient(models.Model):
     # Link to Django user (optional, if you want login for patients)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    
+    user = models.OneToOneField(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE,
+    null=True,
+    blank=True,
+    related_name="patient"
+)
+
     # Basic patient details
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

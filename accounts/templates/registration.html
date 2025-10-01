@@ -6,7 +6,7 @@
   <title>Registration</title>
   <link rel="stylesheet" href="{% static 'css/login.css' %}">
   <style>
-    /* Extra styling for role switch */
+    /* Role switch styling */
     .role-select {
       display: flex;
       justify-content: center;
@@ -42,7 +42,7 @@
 
       <!-- Common fields -->
       <div class="form-group">
-        <label>Fullname</label>
+        <label>Username</label>
         <input type="text" name="username" required>
       </div>
       <div class="form-group">
@@ -57,28 +57,32 @@
       <!-- Patient fields -->
       <div id="patient-fields">
         <div class="form-group">
-          <label>Phone</label>
-          <input type="text" name="patient_name">
+          <label>Full Name</label>
+          <input type="text" name="patient_name" required>
         </div>
         <div class="form-group">
           <label>Age</label>
-          <input type="number" name="patient_age" min="0">
+          <input type="number" name="patient_age" min="0" required>
         </div>
         <div class="form-group">
           <label>Gender</label>
-          <select name="patient_gender">
+          <select name="patient_gender" required>
             <option value="">--Select--</option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="O">Other</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" name="phone_number" required>
         </div>
       </div>
 
       <!-- Doctor fields -->
       <div id="doctor-fields" class="hidden">
         <div class="form-group">
-          <label>Phone</label>
+          <label>Full Name</label>
           <input type="text" name="doctor_name">
         </div>
         <div class="form-group">
@@ -91,7 +95,7 @@
         </div>
       </div>
 
-      <!-- Only ONE hidden field for role -->
+      <!-- Hidden input for role -->
       <input type="hidden" name="role" id="role-input" value="patient">
 
       <button type="submit" class="btn">Register</button>
@@ -103,22 +107,22 @@
   </div>
 
   <script>
-  function toggleForm() {
-    const role = document.querySelector('input[name="role-choice"]:checked').value;
-    const patientFields = document.getElementById("patient-fields");
-    const doctorFields = document.getElementById("doctor-fields");
+    function toggleForm() {
+      const role = document.querySelector('input[name="role-choice"]:checked').value;
+      const patientFields = document.getElementById("patient-fields");
+      const doctorFields = document.getElementById("doctor-fields");
 
-    if (role === "patient") {
-      patientFields.classList.remove("hidden");
-      doctorFields.classList.add("hidden");
-    } else {
-      patientFields.classList.add("hidden");
-      doctorFields.classList.remove("hidden");
+      if (role === "patient") {
+        patientFields.classList.remove("hidden");
+        doctorFields.classList.add("hidden");
+      } else {
+        patientFields.classList.add("hidden");
+        doctorFields.classList.remove("hidden");
+      }
+
+      // Update hidden input so the role is submitted correctly
+      document.getElementById("role-input").value = role;
     }
-
-    // Update hidden input so the role is submitted correctly
-    document.getElementById("role-input").value = role;
-  }
   </script>
 </body>
 </html>

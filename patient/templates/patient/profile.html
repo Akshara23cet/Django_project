@@ -1,0 +1,21 @@
+{% extends 'patient/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>My Profile</h2>
+    <hr>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Personal Information</h5>
+            <p><strong>Full Name:</strong> {{ request.user.username }}</p>
+            <p><strong>Email:</strong> {{ request.user.email }}</p>
+            <p><strong>Role:</strong> {{ request.user.role|title }}</p>
+            <p><strong>Gender:</strong> {{ request.user.patient.get_gender_display }}</p>
+            <p><strong>Phone:</strong> {{ request.user.patient.phone_number }}</p>
+        </div>
+    </div>
+
+   
+</div>
+{% endblock %}

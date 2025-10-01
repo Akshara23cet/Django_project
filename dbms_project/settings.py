@@ -136,3 +136,5 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # Redirect to login page if not authenticated
 LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/patient/dashboard/'   # where to send after login
+LOGOUT_REDIRECT_URL = '/accounts/login/'
