@@ -6,6 +6,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.profile, name='profile'),
     path('history/', views.history, name='history'),
-    path('settings/', views.settings, name='settings'),
+    path('booking/', views.booking, name='booking'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
 ]

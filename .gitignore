@@ -1,17 +1,26 @@
-# Python cache
+# Python
 __pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 *.pyc
 
-# Virtual environment
-venv/
-
-# Django stuff
+# Django
+*.sqlite3
 db.sqlite3
 *.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+media/
+staticfiles/
+.env
 
-# VSCode / PyCharm configs
+# VSCode
 .vscode/
-.idea/
 
 # OS files
 .DS_Store

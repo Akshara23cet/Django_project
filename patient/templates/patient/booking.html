@@ -1,0 +1,12 @@
+{% extends 'patient/base.html' %}
+
+{% block content %}
+<div class="card p-4">
+  <h2>Book an Appointment</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Book</button>
+  </form>
+</div>
+{% endblock %}
