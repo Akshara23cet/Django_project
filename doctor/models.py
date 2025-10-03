@@ -1,21 +1,24 @@
+# doctor/models.py
+
 from django.db import models
-from django.conf import settings  # use this for custom user model
+from django.conf import settings # <-- 1. Import settings is necessary
 
 class Doctor(models.Model):
-    fullname = models.CharField(max_length=100)
-    specialization = models.CharField(max_length=100)
-    experience = models.PositiveIntegerField()  # years of experience
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="doctors"
+    # Link to the custom user model defined in settings.AUTH_USER_MODEL
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,  # <-- 2. The FIX: References your CustomUser model
+        on_delete=models.CASCADE
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # Professional details
+    specialization = models.CharField(max_length=100)
+    years_of_experience = models.PositiveIntegerField(default=0)
+    department = models.CharField(max_length=50, blank=True, null=True)
+
+    # Availability
+    available_from = models.TimeField(blank=True, null=True)
+    available_to = models.TimeField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.fullname} ({self.specialization})"
+        # This assumes your CustomUser model has 'first_name' and 'last_name' fields
+        return f"Dr. {self.user.first_name} {self.user.last_name} - {self.specialization}"
