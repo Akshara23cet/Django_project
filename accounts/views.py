@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import CustomUser
-from patient.models import Patient  # optional, for patient data
+from patient.models import Patient
+from doctor.models import Doctor  # optional, for patient data
 
 # Registration page
 def registration_page(request):
@@ -10,6 +11,7 @@ def registration_page(request):
 
 # Login page
 def login_page(request):
+    
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -17,8 +19,13 @@ def login_page(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)   # 🔴 this creates the session
-            return redirect("dashboard")  # redirect to patient dashboard
+            login(request, user)  # creates the session
+
+            # check the role and redirect accordingly
+            if user.role == 'doctor':
+                return redirect("doctor_dashboard")  # URL name for doctor dashboard
+            else:
+                return redirect("dashboard")  # URL name for patient dashboard
         else:
             messages.error(request, "Invalid username or password")
 
@@ -26,7 +33,9 @@ def login_page(request):
 
 # Handle login POST
 def signIn(request):
+    
     if request.method == 'POST':
+        print("ooooooooooo")
         username = request.POST.get('username')
         password = request.POST.get('password')
 
@@ -35,7 +44,7 @@ def signIn(request):
             login(request, user)  # <--- Important!
             # Redirect based on role
             if user.role == 'patient':
-                return redirect('patient_dashboard')
+                return redirect('dashboard')
             elif user.role == 'doctor':
                 return redirect('doctor_dashboard')
             else:
@@ -47,6 +56,7 @@ def signIn(request):
 
 # Handle registration POST
 def register(request):
+
     if request.method == 'POST':
 
         role = request.POST.get('role')
@@ -64,6 +74,7 @@ def register(request):
             password=password,
             role=role
         )
+        print("haaaaaaaaai")
 
         if role == 'patient':
             patient_name = request.POST.get('patient_name')
@@ -81,7 +92,18 @@ def register(request):
                 phone_number=phone_number
             )
 
+             # handle doctor registration
+        elif role == 'doctor':
+            fullname = request.POST.get('doctor_name')
+            specialization = request.POST.get('specialization')
+            experience = request.POST.get('experience')
 
+            Doctor.objects.create(
+                user=user,
+                fullname=fullname,
+                specialization=specialization,
+                experience=experience
+            )
         messages.success(request, "Registration successful! Please login.")
         return redirect('login_page')
 

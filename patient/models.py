@@ -4,25 +4,25 @@ from django.conf import settings
 
 
 class Patient(models.Model):
-    # Link to Django user (optional, if you want login for patients)
-    user = models.OneToOneField(
+    # Link to Django user (foreign key, you can manually insert user_id)
+    user = models.ForeignKey(
     settings.AUTH_USER_MODEL,
     on_delete=models.CASCADE,
     null=True,
     blank=True,
-    related_name="patient"
+    related_name="patients"
 )
 
     # Basic patient details
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    age = models.IntegerField()
-    gender_choices = [
+    age = models.PositiveIntegerField()
+    GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
         ('O', 'Other'),
     ]
-    gender = models.CharField(max_length=1, choices=gender_choices, default='O')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='O')
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     
@@ -35,7 +35,6 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
 
 class Booking(models.Model):
     patient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -6,7 +6,6 @@
   <title>Registration</title>
   <link rel="stylesheet" href="{% static 'css/login.css' %}">
   <style>
-    /* Role switch styling */
     .role-select {
       display: flex;
       justify-content: center;
@@ -81,19 +80,28 @@
 
       <!-- Doctor fields -->
       <div id="doctor-fields" class="hidden">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" name="doctor_name">
-        </div>
-        <div class="form-group">
-          <label>Specialization</label>
-          <input type="text" name="specialization">
-        </div>
-        <div class="form-group">
-          <label>Experience (in years)</label>
-          <input type="number" name="experience" min="0">
-        </div>
-      </div>
+  <div class="form-group">
+    <label>Full Name</label>
+    <input type="text" name="doctor_name">
+  </div>
+
+  <div class="form-group">
+    <label>Specialization</label>
+    <select name="specialization">
+      <option value="cardiology">Cardiology</option>
+      <option value="neurology">Neurology</option>
+      <option value="orthopedics">Orthopedics</option>
+      <option value="pediatrics">Pediatrics</option>
+      <option value="dermatology">Dermatology</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Experience (in years)</label>
+    <input type="number" name="experience" min="0">
+  </div>
+</div>
+
 
       <!-- Hidden input for role -->
       <input type="hidden" name="role" id="role-input" value="patient">
@@ -115,14 +123,27 @@
       if (role === "patient") {
         patientFields.classList.remove("hidden");
         doctorFields.classList.add("hidden");
+
+        // Make patient inputs required
+        patientFields.querySelectorAll("input, select").forEach(el => el.required = true);
+        // Make doctor inputs not required
+        doctorFields.querySelectorAll("input").forEach(el => el.required = false);
       } else {
         patientFields.classList.add("hidden");
         doctorFields.classList.remove("hidden");
+
+        // Make doctor inputs required
+        doctorFields.querySelectorAll("input").forEach(el => el.required = true);
+        // Make patient inputs not required
+        patientFields.querySelectorAll("input, select").forEach(el => el.required = false);
       }
 
       // Update hidden input so the role is submitted correctly
       document.getElementById("role-input").value = role;
     }
+
+    // Initialize required fields on page load
+    window.addEventListener('DOMContentLoaded', toggleForm);
   </script>
 </body>
 </html>

@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  # accounts app (login/register)
     path('patient/', include('patient.urls')), 
+    path('doctor/', include('doctor.urls')),
     path('', RedirectView.as_view(pattern_name='login_page', permanent=False)),
 ]
