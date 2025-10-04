@@ -4,6 +4,31 @@ from django.contrib import messages
 from .models import CustomUser
 from patient.models import Patient
 from doctor.models import Doctor  # optional, for patient data
+from django.http import JsonResponse
+from doctor.models import Doctor
+
+def test(request):
+       print("hello")
+       return redirect('login_page')
+
+# def get_doctors(request):
+#       if request.method == "GET":
+#         # Fetch all doctors from DB
+#          print('hi')
+#          doctors = Doctor.objects.all().values("id", "fullname", "specialization")
+#         # Convert queryset to list
+#          doctor_list = list(doctors)
+#          print('doctors => ',doctor_list)
+
+def get_doctors(request):
+    selected_spec = request.GET.get('specialization')
+    doctors = []
+
+    if selected_spec:
+        doctors_qs = Doctor.objects.filter(specialization__iexact=selected_spec)
+        doctors = list(doctors_qs.values("id", "fullname"))
+
+    return JsonResponse({'doctors': doctors})
 
 # Registration page
 def registration_page(request):
@@ -106,5 +131,8 @@ def register(request):
             )
         messages.success(request, "Registration successful! Please login.")
         return redirect('login_page')
-
     return render(request, 'registration.html')
+    
+    
+
+    

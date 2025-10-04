@@ -46,3 +46,10 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.patient} - {self.doctor} on {self.date}"
+    
+class Doctor(models.Model):
+        fullname = models.CharField(max_length=100)
+        specialization = models.CharField(max_length=50)
+
+        def __str__(self):
+           return self.fullname

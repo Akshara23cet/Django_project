@@ -1,0 +1,34 @@
+{% extends 'patient/base.html' %}
+
+{% block content %}
+<h2>Book Appointment</h2>
+
+<!-- Specialization selection form -->
+<form method="GET" id="spec-form">
+    <label>Select Specialization:</label>
+    <select name="specialization" required onchange="document.getElementById('spec-form').submit()">
+        <option value="">-- Choose --</option>
+        {% for spec in specializations %}
+            <option value="{{ spec }}" {% if spec == selected_spec %}selected{% endif %}>{{ spec }}</option>
+        {% endfor %}
+    </select>
+</form>
+
+<!-- Doctor dropdown -->
+{% if doctors %}
+    <form method="GET" action="{% url 'booking' %}">
+        <label>Select Doctor:</label>
+        <select name="doctor" required>
+            <option value="">-- Choose Doctor --</option>
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.fullname }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Optional: include the specialization so it persists in booking view -->
+        <input type="hidden" name="specialization" value="{{ selected_spec }}">
+        <button type="submit">Next</button>
+    </form>
+{% endif %}
+
+{% endblock %}

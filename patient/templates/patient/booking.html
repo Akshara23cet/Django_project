@@ -1,12 +1,140 @@
-{% extends 'patient/base.html' %}
-
+ {% extends 'patient/base.html' %}
 {% block content %}
-<div class="card p-4">
-  <h2>Book an Appointment</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Book</button>
-  </form>
-</div>
-{% endblock %}
+
+<h2>Book Appointment</h2>
+
+<!-- Specialization Dropdown -->
+<form method="get" action="">
+  <div class="form-group">
+    <label>Specialization</label>
+    <select id="specialization" name="specialization" onchange="this.form.submit()">
+      <option value="">-- Select Specialization --</option>
+      {% for spec in specializations %}
+        <option value="{{ spec }}" {% if specialization == spec %}selected{% endif %}>
+          {{ spec }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<!-- Booking Form -->
+{% if form %}
+<form method="post" id="bookingForm">
+  {% csrf_token %}
+
+  <!-- Doctor Dropdown -->
+  <div class="form-group">
+    <label>Doctor</label>
+    <select id="doctor" name="doctor">
+      <option value="">-- Select Doctor --</option>
+      {% for doctor in form.fields.doctor.queryset %}
+        <option value="{{ doctor.id }}"
+          {% if request.POST.doctor == doctor.id|stringformat:"s" %}selected{% endif %}>
+          {{ doctor.fullname }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Date Field -->
+  <div class="form-group">
+    {{ form.date.label_tag }} {{ form.date }}
+  </div>
+
+  <!-- Available Slots -->
+  <div class="form-group">
+    <label>Available Slots</label>
+    <select id="slot" name="slot">
+      <option value="">-- Select Slot --</option>
+    </select>
+  </div>
+  <div class="form-group">
+    {{ form.time.label_tag }} {{ form.time }}
+  </div>
+
+  <!-- Reason Field -->
+  <div class="form-group">
+    {{ form.reason.label_tag }} {{ form.reason }}
+  </div>
+
+  <button type="submit">Book Appointment</button>
+</form>
+{% endif %}
+
+<!-- JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const doctorSelect = document.getElementById('doctor');
+    const slotSelect = document.getElementById('slot');
+    const bookingForm = document.getElementById('bookingForm');
+
+    // Fetch available slots for selected doctor
+    function fetchSlots(doctorId) {
+        slotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
+        if (doctorId) {
+            fetch(`/patient/get-slots/?doctor_id=${doctorId}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("Fetched slots:", data.slots);
+                    data.slots.forEach(slot => {
+                        const option = document.createElement('option');
+                        option.value = slot;
+                        option.text = slot;
+                        slotSelect.add(option);
+                    });
+                });
+        }
+    }
+
+    // When doctor changes -> fetch slots
+    doctorSelect.addEventListener('change', function() {
+        fetchSlots(this.value);
+    });
+
+    // Auto-fetch slots if doctor pre-selected after page reload
+    if (doctorSelect.value) {
+        fetchSlots(doctorSelect.value);
+    }
+
+    // AJAX form submission
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(bookingForm);
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+
+
+            fetch("{% url 'patient_booking' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                   "X-Requested-With": "XMLHttpRequest",
+                   "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+
+                 }
+
+               
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Your booking is confirmed!");
+                    window.location.href = "{% url 'profile' %}";
+                } else if (data.errors) {
+                    alert("Error: " + data.errors.join(", "));
+                }
+            })
+            .catch(err => console.error(err));
+        });
+    }
+});
+</script>
+
+{% endblock %} 
+
+
+  
+
