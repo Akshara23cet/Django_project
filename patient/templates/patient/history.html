@@ -1,0 +1,30 @@
+{% extends "patient/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Booking History</h2>
+
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+
+    {% if appointments %}
+    <table border="1" cellpadding="10" cellspacing="0">
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Doctor</th>
+            <th>Reason</th>
+        </tr>
+        {% for app in appointments %}
+        <tr>
+            <td>{{ app.date|date:"D d M Y" }}</td>
+            <td>{{ app.time|time:"H:i" }}</td>
+            <td>{{ app.doctor }}</td>
+            <td>{{ app.reason|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+{% endblock %}
