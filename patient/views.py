@@ -9,6 +9,9 @@ from .models import Booking
 
 
 
+from django.utils import timezone
+from .models import Booking
+
 
 # Create your views here.
 @login_required
@@ -166,6 +169,22 @@ def choose_specialization(request):
 #         'specialization': specialization,
 #         'form': form,
 #     })
+    user = request.user  # current logged-in user
+    message = None
+
+    # Fetch all past bookings (before current time)
+    past_bookings = Booking.objects.filter(
+        patient=user,
+        date__lt=timezone.now().date()
+    ).order_by('-date', '-time')
+
+    if not past_bookings.exists():
+        message = "You have no past bookings."
+
+    return render(request, 'patient/history.html', {
+        'appointments': past_bookings,
+        'message': message
+    })
 
 @login_required
 def booking(request):
