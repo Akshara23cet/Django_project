@@ -5,12 +5,12 @@ from django.conf import settings
 
 class Patient(models.Model):
     # Link to Django user (foreign key, you can manually insert user_id)
-    user = models.ForeignKey(
+    user = models.OneToOneField(
     settings.AUTH_USER_MODEL,
     on_delete=models.CASCADE,
     null=True,
     blank=True,
-    related_name="patients"
+    related_name='patient'
 )
 
     # Basic patient details
