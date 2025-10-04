@@ -14,15 +14,21 @@
             min-height: 100vh;
             color: white;
             padding-top: 20px;
-            width: 250px
+            width: 250px;
         }
-        .sidebar a {
+        .sidebar a, .sidebar form button {
             display: block;
             color: white;
             padding: 10px 20px;
             text-decoration: none;
+            background: none;
+            border: none;
+            text-align: left;
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
         }
-        .sidebar a:hover {
+        .sidebar a:hover, .sidebar form button:hover {
             background-color: #0056b3;
             text-decoration: none;
         }
@@ -39,12 +45,18 @@
 <body>
 <div class="d-flex">
     <div class="sidebar">
-        <h2>{{"Patient Dashboard"|upper}}</h2>
+        <h2>{{ "Patient Dashboard"|upper }}</h2>
         <a href="{% url 'profile' %}">Profile</a>
         <a href="{% url 'history' %}">History</a>
         <a href="{% url 'booking' %}">Book Appointment</a>
-        <a href="{% url 'logout' %}">Logout</a>
+        
+        <!-- Logout as a form styled like a link -->
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
     </div>
+
     <div class="content flex-grow-1">
         {% block content %}
         {% endblock %}

@@ -82,7 +82,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'dbms_project',
         'USER': 'postgres',
-        'PASSWORD': os.getenv('DB_PASSWORD', '1234'),  # default fallback
         'HOST': 'localhost',
         'PORT': '5432',
     }
