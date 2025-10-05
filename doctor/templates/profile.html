@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .profile-img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .info-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .btn-download {
+      background: #0d6efd;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      padding: 10px 15px;
+      display: inline-block;
+    }
+    .btn-download:hover {
+      background: #084298;
+      color: white;
+    }
+    .price-list {
+      background: #0d6efd;
+      color: white;
+      border-radius: 10px;
+      padding: 15px;
+    }
+    .price-list h5 {
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+    .price-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-5">
+  <div class="row">
+    <!-- Left Column -->
+    <div class="col-md-4">
+      <div class="info-box text-center">
+        <img src="https://via.placeholder.com/300x300" alt="Doctor" class="profile-img mb-3">
+        <h4>Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h4>
+        <p><strong>{{ doctor.specialization }}</strong></p>
+      </div>
+
+      <div class="info-box">
+        <h5>Contact Us</h5>
+        <p><strong>Phone:</strong> +91-9876543210</p>
+        <p><strong>Email:</strong> {{ doctor.user.email }}</p>
+        <p><strong>Degree:</strong> M.D. of Medicine</p>
+        <p><strong>University:</strong> Harvard University</p>
+      </div>
+
+      <div class="info-box">
+        <h5>Working Hours</h5>
+        <p>Mon - Thu: 09:30 - 21:00</p>
+        <p>Friday: 10:00 - 20:00</p>
+        <p>Saturday: 10:00 - 15:00</p>
+        <a href="#" class="btn-download">Download Doctor VCard</a>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-md-8">
+      <div class="info-box">
+        <h4>Biography</h4>
+        <p>.</p>
+      </div>
+
+      <div class="info-box">
+        <h4>Areas of Expertise</h4>
+        <ul class="row">
+          <li class="col-md-6">Heart Surgery</li>
+          <li class="col-md-6">Cardiac Electrophysiology</li>
+          <li class="col-md-6">Nuclear Cardiology</li>
+          <li class="col-md-6">Neurocritical Care</li>
+        </ul>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="price-list">
+            <h5>Investigations Price List</h5>
+            <div class="price-item"><span>Umbilical Cord Appearance</span><span>$25</span></div>
+            <div class="price-item"><span>Cardiac Electrophysiology</span><span>$30</span></div>
+            <div class="price-item"><span>Genetics Neurology</span><span>$50</span></div>
+            <div class="price-item"><span>Nuclear Cardiology</span><span>$70</span></div>
+            <div class="price-item"><span>Neurocritical Care</span><span>$90</span></div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="price-list">
+            <h5>Treatments Price List</h5>
+            <div class="price-item"><span>Colonoscopy</span><span>$60</span></div>
+            <div class="price-item"><span>Allergy Testing</span><span>$70</span></div>
+            <div class="price-item"><span>Gastroenterology</span><span>$100</span></div>
+            <div class="price-item"><span>Cardiac Ablation</span><span>$80</span></div>
+            <div class="price-item"><span>Holter Monitoring</span><span>$120</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
