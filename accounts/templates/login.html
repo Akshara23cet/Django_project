@@ -10,19 +10,36 @@
 <body>
     <div class="card">
         <h2>Login</h2>
-        <form method="POST">
+        <!-- Always include csrf_token for POST -->
+        <form method="post" action="{% url 'login_page' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label>Username</label>
-                <input type="text" name="username" required>
+                <label for="username">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Enter your username" 
+                    required>
             </div>
+
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" required>
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Enter your password" 
+                    required>
             </div>
+
             <button type="submit" class="btn">Login</button>
         </form>
-        <p>Don’t have an account? <a href="{% url 'registration_page' %}">Register</a></p>
+
+        <p class="mt-3">
+            Don’t have an account? 
+            <a href="{% url 'registration_page' %}">Register</a>
+        </p>
     </div>
 </body>
 </html>
