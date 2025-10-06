@@ -20,7 +20,7 @@
         <tr>
             <td>{{ app.date|date:"D d M Y" }}</td>
             <td>{{ app.time|time:"H:i" }}</td>
-            <td>{{ app.doctor }}</td>
+            <td>Dr. {{ app.doctor.fullname }}</td>
             <td>{{ app.reason|default:"—" }}</td>
         </tr>
         {% endfor %}

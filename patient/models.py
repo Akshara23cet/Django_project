@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from doctor.models import Doctor
+
 
 
 class Patient(models.Model):
@@ -38,7 +40,7 @@ class Patient(models.Model):
 
 class Booking(models.Model):
     patient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    doctor = models.CharField(max_length=100)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
     reason = models.TextField(blank=True, null=True)

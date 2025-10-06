@@ -116,98 +116,98 @@ def choose_specialization(request):
     return render(request, 'patient/choose_specialization.html', context)
 
 
-# @login_required
-# def booking(request):
-#     # Get selected specialization from GET parameter
-#     specialization = request.GET.get('specialization')
-#     print('a',specialization)
-
-#     # Get all distinct specializations for the dropdown
-#     specializations = Doctor.objects.values_list('specialization', flat=True).distinct()
-#     print('b',specializations)
-#     # Initialize the form only if a specialization is selected
-#     if specialization:
-#         if request.method == 'POST':
-#             form = BookingForm(request.POST, specialization=specialization)
-#             if form.is_valid():
-#                 booking = form.save(commit=False)
-#                 booking.patient = request.user
-#                 booking.save()
-#                 return redirect('patient_dashboard')
-#         else:
-#             form = BookingForm(specialization=specialization)
-#     else:
-#         form = None  # No form until specialization is selected
-
-#     return render(request, 'patient/booking.html', {
-#         'specializations': specializations,
-#         'specialization': specialization,
-#         'form': form,
-#     })
-  
 
 # @login_required
 # def booking(request):
 #     specialization = request.GET.get('specialization')
 #     specializations = Doctor.objects.values_list('specialization', flat=True).distinct()
+#     form = BookingForm(specialization=specialization) if specialization else None
+#     if request.method == "POST" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+#         doctor_id = request.POST.get('doctor')
+#         date = request.POST.get('date')
+#         time = request.POST.get('time')
+#         reason = request.POST.get('reason')
 
-#     form = BookingForm(request.POST or None, specialization=specialization) if specialization else None
+#         if not (doctor_id and date and time and reason):
+#             return JsonResponse({"errors": ["All fields are required"]})
 
-#     if request.method == "POST":
-#         selected_slot = request.POST.get('slot')
-#         selected_doctor = request.POST.get('doctor')
-
-#         # Check if slot is already booked
-#         if selected_slot and selected_doctor:
-#             existing = Booking.objects.filter(
-#                 doctor=selected_doctor,
-#                 date=request.POST.get('date'),
-#                 time=selected_slot
-#             ).exists()
-#             if existing:
-#                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-#                     return JsonResponse({'success': False, 'errors': ["This slot is already booked."]})
-#                 else:
-#                     form.add_error('time', 'This slot is already booked.')
-
-#         if form.is_valid() and selected_slot:
-#             booking = form.save(commit=False)
-#             booking.patient = request.user
-#             booking.time = selected_slot
+#         try:
+#             booking = Booking(
+#                 patient=request.user,
+#                 doctor_id=doctor_id,   # <-- this maps to doctor foreign key
+#                 date=date,
+#                 time=time,
+#                 reason=reason
+#             )
 #             booking.save()
+#             return JsonResponse({"success": True})
+#         except Exception as e:
+#             return JsonResponse({"errors": [str(e)]})
+        
+#         return render(request, 'patient/booking.html', {
+#          'specializations': specializations,
+#          'specialization': specialization,
+#       'form': form,
+#      })
 
-#             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-#                 return JsonResponse({'success': True})
 
-#             return redirect('profile')  # fallback for normal submission
+    # AJAX POST submission
+    # if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    #     form = BookingForm(request.POST, specialization=request.POST.get('specialization'))
+    #     if form.is_valid():
+    #         booking = form.save(commit=False)
+    #         booking.patient = request.user
+    #         booking.save()
+    #         return JsonResponse({'success': True})
+    #     else:
+    #         errors = [f"{k}: {v[0]}" for k, v in form.errors.items()]
+    #         return JsonResponse({'success': False, 'errors': errors})
 
-#     return render(request, 'patient/booking.html', {
-#         'specializations': specializations,
-#         'specialization': specialization,
-#         'form': form,
-#     })
-
+    # return render(request, 'patient/booking.html', {
+    #     'specializations': specializations,
+    #     'specialization': specialization,
+    #     'form': form,
+    # })
 
 @login_required
 def booking(request):
-    specialization = request.GET.get('specialization')
-    specializations = Doctor.objects.values_list('specialization', flat=True).distinct()
-    form = BookingForm(specialization=specialization) if specialization else None
+    if request.method == "POST" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # handle booking save via AJAX
+        doctor_id = request.POST.get('doctor')
+        doctor = Doctor.objects.get(id=doctor_id)
 
-    # AJAX POST submission
-    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        form = BookingForm(request.POST, specialization=request.POST.get('specialization'))
-        if form.is_valid():
-            booking = form.save(commit=False)
-            booking.patient = request.user
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        reason = request.POST.get('reason')
+
+        if not (doctor_id and date and time and reason):
+            return JsonResponse({"errors": ["All fields are required"]})
+
+        try:
+            booking = Booking(
+                patient=request.user,
+                doctor=doctor,
+                date=date,
+                time=time,
+                reason=reason
+            )
             booking.save()
-            return JsonResponse({'success': True})
-        else:
-            errors = [f"{k}: {v[0]}" for k, v in form.errors.items()]
-            return JsonResponse({'success': False, 'errors': errors})
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"errors": [str(e)]})
+
+    # For GET request: render the booking form
+    specialization = request.GET.get("specialization")
+    specializations = Doctor.objects.values_list("specialization", flat=True).distinct()
+
+    form = None
+    if specialization:
+        doctors = Doctor.objects.filter(specialization=specialization)
+        form = BookingForm()
+        form.fields['doctor'].queryset = doctors
 
     return render(request, 'patient/booking.html', {
-        'specializations': specializations,
-        'specialization': specialization,
-        'form': form,
+        "form": form,
+        "specializations": specializations,
+        "specialization": specialization
     })
