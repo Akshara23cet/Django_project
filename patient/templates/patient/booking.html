@@ -170,21 +170,27 @@ document.addEventListener('DOMContentLoaded', function() {
   const slotSelect = document.getElementById('slot');
   const bookingForm = document.getElementById('bookingForm');
 
-  function fetchSlots(doctorId) {
-    slotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
-    if (doctorId) {
-      fetch(`/patient/get-slots/?doctor_id=${doctorId}`)
+  const dateInput = document.querySelector('[name="date"]');
+
+function fetchSlots(doctorId) {
+    const selectedDate = dateInput ? dateInput.value : "";
+    fetch(`/patient/get-slots/?doctor_id=${doctorId}&date=${selectedDate}`)
         .then(res => res.json())
         .then(data => {
-          data.slots.forEach(slot => {
-            const option = document.createElement('option');
-            option.value = slot;
-            option.text = slot;
-            slotSelect.add(option);
-          });
+            slotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
+            data.slots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot;
+                option.text = slot;
+                slotSelect.add(option);
+            });
         });
-    }
-  }
+}
+document.querySelector('[name="date"]').addEventListener('change', function() {
+    const doctorId = document.getElementById('doctor').value;
+    if (doctorId) fetchSlots(doctorId);
+});
+
 
   doctorSelect.addEventListener('change', function() {
     fetchSlots(this.value);

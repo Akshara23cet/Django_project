@@ -62,29 +62,56 @@ def get_doctors(request):
     return JsonResponse({'doctors': doctors})
 
 
+# def get_slots(request):
+#     doctor_id = request.GET.get("doctor_id")
+#     slots = []
+
+#     if doctor_id:
+#         now = datetime.now()
+#         start_time = now.replace(minute=(0 if now.minute < 30 else 30), second=0, microsecond=0) + timedelta(minutes=30)
+#         end_time = now.replace(hour=19, minute=0, second=0, microsecond=0)
+
+#         # Fix here: use doctor=doctor_id
+#         booked_slots = Booking.objects.filter(
+#             doctor=doctor_id,
+#             date=now.date()
+#         ).values_list('time', flat=True)
+
+#         while start_time <= end_time:
+#             slot_str = start_time.strftime("%I:%M %p")
+#             if slot_str not in booked_slots:
+#                 slots.append(slot_str)
+#             start_time += timedelta(minutes=30)
+
+#     return JsonResponse({"slots": slots})
+
 def get_slots(request):
-    doctor_id = request.GET.get("doctor_id")
-    slots = []
+    doctor_id = request.GET.get('doctor_id')
+    date_str = request.GET.get('date')
+    
+    # Example: available_slots = ["09:00 AM", "10:00 AM", "11:00 AM", ...]
+    available_slots = [
+        "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
+        "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"
+    ]
+    
+    # If date is passed
+    if date_str:
+        selected_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        today = datetime.now().date()
 
-    if doctor_id:
-        now = datetime.now()
-        start_time = now.replace(minute=(0 if now.minute < 30 else 30), second=0, microsecond=0) + timedelta(minutes=30)
-        end_time = now.replace(hour=19, minute=0, second=0, microsecond=0)
+        # ✅ If selected date is today → show only future slots
+        if selected_date == today:
+            current_time = datetime.now().time()
 
-        # Fix here: use doctor=doctor_id
-        booked_slots = Booking.objects.filter(
-            doctor=doctor_id,
-            date=now.date()
-        ).values_list('time', flat=True)
+            def parse_time(slot_str):
+                return datetime.strptime(slot_str, "%I:%M %p").time()
 
-        while start_time <= end_time:
-            slot_str = start_time.strftime("%I:%M %p")
-            if slot_str not in booked_slots:
-                slots.append(slot_str)
-            start_time += timedelta(minutes=30)
+            available_slots = [
+                s for s in available_slots if parse_time(s) > current_time
+            ]
 
-    return JsonResponse({"slots": slots})
-
+    return JsonResponse({"slots": available_slots})
 
 def choose_specialization(request):
     specializations = Doctor.objects.values_list('specialization', flat=True).distinct()
