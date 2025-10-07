@@ -45,6 +45,7 @@ class Booking(models.Model):
     time = models.TimeField()
     reason = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    patient_full_name = models.CharField(max_length=150, null=True)
 
     def __str__(self):
         return f"{self.patient} - {self.doctor} on {self.date}"

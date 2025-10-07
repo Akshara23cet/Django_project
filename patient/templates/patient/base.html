@@ -3,42 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <title>Patient Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+        /* 💡 ADDED: CSS Variables from the Doctor Profile template */
+        :root {
+            --primary-color: #26619c; /* Bootstrap Blue */
+            --secondary-color: #0b2449ff; /* Darker Blue for hover */
+            --accent-color: #28a745; /* Green */
         }
+        
+        body {
+            /* 💡 UPDATED: Modern light background and Inter font */
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Modern light gray background */
+            margin: 0;
+            padding: 0;
+        }
+        
         .sidebar {
-            background-color: #0d6efd;
+            /* 💡 UPDATED: Reduced width and added box-shadow for definition */
+            background-color: var(--primary-color);
             min-height: 100vh;
             color: white;
             padding-top: 20px;
             width: 250px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
+        
+        .sidebar h2 {
+            /* 💡 UPDATED: Better visual alignment for the title */
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5rem; /* Larger and bolder title */
+            font-weight: 700;
+        }
+        
+        /* 💡 IMPROVED: Sidebar links for better styling consistency */
         .sidebar a, .sidebar form button {
             display: block;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px; /* Increased padding */
             text-decoration: none;
             background: none;
             border: none;
             text-align: left;
-            width: 100%;
+            width: 90%; /* Allows margin for rounded corners */
+            margin: 8px auto; /* Centered margin */
             font-size: 1rem;
             cursor: pointer;
+            border-radius: 8px; /* Rounded corners */
+            transition: background 0.3s, transform 0.1s;
+            font-weight: 500;
         }
+        
         .sidebar a:hover, .sidebar form button:hover {
-            background-color: #0056b3;
+            /* 💡 UPDATED: Use secondary color variable for smoother hover */
+            background-color: var(--secondary-color);
             text-decoration: none;
+            transform: translateX(5px); /* Subtle shift on hover */
         }
+        
+        /* Ensure the active link is visible */
+        .sidebar a.active-link {
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
         .content {
             padding: 20px;
+            /* 💡 ADDED: Styles for the main content area */
+            flex-grow: 1;
+            padding: 40px; /* More generous padding */
         }
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 18px;
+        
+        /* 💡 ADDED: Styles for the info-box/card from the doctor template */
+        .info-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: none;
         }
     </style>
 </head>
@@ -51,7 +99,6 @@
         <a href="{% url 'history' %}">History</a>
         <a href="{% url 'booking' %}">Book Appointment</a>
         
-        <!-- Logout as a form styled like a link -->
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button type="submit">Logout</button>

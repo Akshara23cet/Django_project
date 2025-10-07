@@ -1,30 +1,61 @@
 {% extends "patient/base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>Booking History</h2>
+<div class="container mt-5 mb-5 p-4" style="background-color: #e6f7ff; border-radius: 15px;">
+    <h2 class="fw-bold mb-4" style="font-family: 'Inter', sans-serif; color: #004085; font-size: 30px">Booking History</h2>
 
     {% if message %}
-        <p>{{ message }}</p>
+        <div class="alert alert-info" role="alert">
+            {{ message }}
+        </div>
     {% endif %}
 
     {% if appointments %}
-    <table border="1" cellpadding="10" cellspacing="0">
-        <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Doctor</th>
-            <th>Reason</th>
-        </tr>
-        {% for app in appointments %}
-        <tr>
-            <td>{{ app.date|date:"D d M Y" }}</td>
-            <td>{{ app.time|time:"H:i" }}</td>
-            <td>Dr. {{ app.doctor.fullname }}</td>
-            <td>{{ app.reason|default:"—" }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle shadow-sm" style="border-radius: 10px; overflow: hidden;">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Doctor</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #ffffff;">
+                    {% for app in appointments %}
+                    <tr>
+                        <td>{{ app.date|date:"D, d M Y" }}</td>
+                        <td>{{ app.time|time:"H:i" }}</td>
+                        <td>Dr. {{ app.doctor.fullname }}</td>
+                        <td>{{ app.reason|default:"—" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            No appointments found.
+        </div>
     {% endif %}
 </div>
+
+<style>
+    .table-primary {
+        background-color: #007bff; /* deeper blue for header */
+        color: white;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+    }
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: #e6f2ff; /* lighter blue shade for rows */
+    }
+    .table-hover tbody tr:hover {
+        background-color: #cce6ff; /* subtle hover effect */
+    }
+    .badge {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+    }
+</style>
 {% endblock %}

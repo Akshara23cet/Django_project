@@ -1,140 +1,226 @@
- {% extends 'patient/base.html' %}
+{% extends 'patient/base.html' %}
+{% load static %} 
 {% block content %}
 
-<h2>Book Appointment</h2>
+<style>
+/* Background and overall layout */
+body {
+  background: url("{% static 'images/booking.jpeg' %}") no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+}
 
-<!-- Specialization Dropdown -->
-<form method="get" action="">
-  <div class="form-group">
-    <label>Specialization</label>
-    <select id="specialization" name="specialization" onchange="this.form.submit()">
-      <option value="">-- Select Specialization --</option>
-      {% for spec in specializations %}
-        <option value="{{ spec }}" {% if specialization == spec %}selected{% endif %}>
-          {{ spec }}
-        </option>
-      {% endfor %}
-    </select>
-  </div>
-</form>
+/* Centered card */
+.booking-container {
+  background: rgba(255, 255, 255, 0.95);
+  max-width: 650px;
+  margin: 50px auto;
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
+}
 
-<!-- Booking Form -->
-{% if form %}
-<form method="post" id="bookingForm">
-  {% csrf_token %}
+/* Heading */
+.booking-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #0077b6;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
 
-  <!-- Doctor Dropdown -->
-  <div class="form-group">
-    <label>Doctor</label>
-    <select id="doctor" name="doctor">
-      <option value="">-- Select Doctor --</option>
-      {% for doctor in form.fields.doctor.queryset %}
-        <option value="{{ doctor.id }}"
-          {% if request.POST.doctor == doctor.id|stringformat:"s" %}selected{% endif %}>
-          {{ doctor.fullname }}
-        </option>
-      {% endfor %}
-    </select>
-  </div>
+/* Form elements */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
-  <!-- Date Field -->
-  <div class="form-group">
-    {{ form.date.label_tag }} {{ form.date }}
-  </div>
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+  color: #333;
+}
 
-  <!-- Available Slots -->
-  <div class="form-group">
-    <label>Available Slots</label>
-    <select id="slot" name="slot">
-      <option value="">-- Select Slot --</option>
-    </select>
-  </div>
-  <div class="form-group">
-    {{ form.time.label_tag }} {{ form.time }}
-  </div>
+.form-group input,
+.form-group select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  transition: border 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
 
-  <!-- Reason Field -->
-  <div class="form-group">
-    {{ form.reason.label_tag }} {{ form.reason }}
-  </div>
+.form-group input:focus,
+.form-group select:focus,
+textarea:focus {
+  border-color: #0077b6;
+  box-shadow: 0 0 4px rgba(0, 119, 182, 0.5);
+  outline: none;
+}
 
-  <button type="submit">Book Appointment</button>
-</form>
-{% endif %}
+/* Button styling */
+button[type="submit"] {
+  background: linear-gradient(90deg, #0077b6, #00b4d8);
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 12px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.1s ease-in-out;
+}
 
-<!-- JavaScript -->
+button[type="submit"]:hover {
+  background: linear-gradient(90deg, #0096c7, #48cae4);
+  transform: scale(1.02);
+}
+
+/* Dropdown form */
+select {
+  cursor: pointer;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .booking-container {
+    padding: 30px 25px;
+    margin: 30px 15px;
+  }
+}
+</style>
+
+<div class="booking-container">
+  <h2 style=" font-size:30px ">Book Appointment</h2>
+
+  <!-- Specialization Dropdown -->
+  <form method="get" action="">
+    <div class="form-group">
+      <label>Specialization</label>
+      <select id="specialization" name="specialization" onchange="this.form.submit()">
+        <option value="">-- Select Specialization --</option>
+        {% for spec in specializations %}
+          <option value="{{ spec }}" {% if specialization == spec %}selected{% endif %}>
+            {{ spec }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+
+  {% if form %}
+  <form method="post" id="bookingForm">
+    {% csrf_token %}
+
+    <!-- Full Name -->
+    <div class="form-group">
+      <label for="full_name">Full Name</label>
+      <input type="text" id="full_name" name="patient_full_name" value="{{ request.user.get_full_name }}" required>
+    </div>
+
+    <!-- Doctor Dropdown -->
+    <div class="form-group">
+      <label>Doctor</label>
+      <select id="doctor" name="doctor">
+        <option value="">-- Select Doctor --</option>
+        {% for doctor in form.fields.doctor.queryset %}
+          <option value="{{ doctor.id }}"
+            {% if request.POST.doctor == doctor.id|stringformat:"s" %}selected{% endif %}>
+            {{ doctor.fullname }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Date -->
+    <div class="form-group">
+      {{ form.date.label_tag }} {{ form.date }}
+    </div>
+
+    <!-- Slot -->
+    <div class="form-group">
+      <label>Available Slots</label>
+      <select id="slot" name="slot">
+        <option value="">-- Select Slot --</option>
+      </select>
+    </div>
+
+    <!-- Time -->
+    <div class="form-group">
+      {{ form.time.label_tag }} {{ form.time }}
+    </div>
+
+    <!-- Reason -->
+    <div class="form-group">
+      {{ form.reason.label_tag }} {{ form.reason }}
+    </div>
+
+    <button type="submit">Book Appointment</button>
+  </form>
+  {% endif %}
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const doctorSelect = document.getElementById('doctor');
-    const slotSelect = document.getElementById('slot');
-    const bookingForm = document.getElementById('bookingForm');
+  const doctorSelect = document.getElementById('doctor');
+  const slotSelect = document.getElementById('slot');
+  const bookingForm = document.getElementById('bookingForm');
 
-    // Fetch available slots for selected doctor
-    function fetchSlots(doctorId) {
-        slotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
-        if (doctorId) {
-            fetch(`/patient/get-slots/?doctor_id=${doctorId}`)
-                .then(res => res.json())
-                .then(data => {
-                    console.log("Fetched slots:", data.slots);
-                    data.slots.forEach(slot => {
-                        const option = document.createElement('option');
-                        option.value = slot;
-                        option.text = slot;
-                        slotSelect.add(option);
-                    });
-                });
-        }
-    }
-
-    // When doctor changes -> fetch slots
-    doctorSelect.addEventListener('change', function() {
-        fetchSlots(this.value);
-    });
-
-    // Auto-fetch slots if doctor pre-selected after page reload
-    if (doctorSelect.value) {
-        fetchSlots(doctorSelect.value);
-    }
-
-    // AJAX form submission
-    if (bookingForm) {
-        bookingForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(bookingForm);
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-
-
-            fetch("{% url 'patient_booking' %}", {
-                method: "POST",
-                body: formData,
-                headers: {
-                   "X-Requested-With": "XMLHttpRequest",
-                   "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-
-                 }
- 
-               
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Your booking is confirmed!");
-                    window.location.href = "{% url 'profile' %}";
-                } else if (data.errors) {
-                    alert("Error: " + data.errors.join(", "));
-                }
-            })
-            .catch(err => console.error(err));
+  function fetchSlots(doctorId) {
+    slotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
+    if (doctorId) {
+      fetch(`/patient/get-slots/?doctor_id=${doctorId}`)
+        .then(res => res.json())
+        .then(data => {
+          data.slots.forEach(slot => {
+            const option = document.createElement('option');
+            option.value = slot;
+            option.text = slot;
+            slotSelect.add(option);
+          });
         });
     }
+  }
+
+  doctorSelect.addEventListener('change', function() {
+    fetchSlots(this.value);
+  });
+
+  if (doctorSelect.value) {
+    fetchSlots(doctorSelect.value);
+  }
+
+  if (bookingForm) {
+    bookingForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(bookingForm);
+
+      fetch("{% url 'patient_booking' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Your booking is confirmed!");
+          window.location.href = "{% url 'profile' %}";
+        } else if (data.errors) {
+          alert("Error: " + data.errors.join(", "));
+        }
+      })
+      .catch(err => console.error(err));
+    });
+  }
 });
 </script>
 
-{% endblock %} 
-
-
-  
-
+{% endblock %}

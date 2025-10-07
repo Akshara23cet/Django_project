@@ -5,6 +5,7 @@ from doctor.models import Doctor
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from .models import Booking
+from datetime import date
 
 
 
@@ -16,8 +17,14 @@ from .models import Booking
 # Create your views here.
 @login_required
 def dashboard(request):
-   
-   return render(request, 'patient/dashboard.html')
+    upcoming_bookings = Booking.objects.filter(
+        patient=request.user,
+        date__gte=date.today()
+    ).order_by('date', 'time')
+
+    return render(request, 'patient/dashboard.html', {
+        'upcoming_bookings': upcoming_bookings,
+    })
 
 @login_required
 def profile(request):
@@ -54,24 +61,6 @@ def get_doctors(request):
 
     return JsonResponse({'doctors': doctors})
 
-# def get_slots(request):
-#     doctor_id = request.GET.get('doctor_id')
-#     now = datetime.now()
-
-#     # Define fixed slots for a day (dummy schedule)
-#     slots = [
-#         "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
-#         "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"
-#     ]
-
-#     # Filter out past slots based on current time
-#     available_slots = []
-#     for s in slots:
-#         slot_time = datetime.strptime(s, "%I:%M %p").time()
-#         if slot_time > now.time():  # only future slots
-#             available_slots.append(s)
-
-#     return JsonResponse({"slots": available_slots})
 
 def get_slots(request):
     doctor_id = request.GET.get("doctor_id")
@@ -117,70 +106,27 @@ def choose_specialization(request):
 
 
 
-# @login_required
-# def booking(request):
-#     specialization = request.GET.get('specialization')
-#     specializations = Doctor.objects.values_list('specialization', flat=True).distinct()
-#     form = BookingForm(specialization=specialization) if specialization else None
-#     if request.method == "POST" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-#         doctor_id = request.POST.get('doctor')
-#         date = request.POST.get('date')
-#         time = request.POST.get('time')
-#         reason = request.POST.get('reason')
-
-#         if not (doctor_id and date and time and reason):
-#             return JsonResponse({"errors": ["All fields are required"]})
-
-#         try:
-#             booking = Booking(
-#                 patient=request.user,
-#                 doctor_id=doctor_id,   # <-- this maps to doctor foreign key
-#                 date=date,
-#                 time=time,
-#                 reason=reason
-#             )
-#             booking.save()
-#             return JsonResponse({"success": True})
-#         except Exception as e:
-#             return JsonResponse({"errors": [str(e)]})
-        
-#         return render(request, 'patient/booking.html', {
-#          'specializations': specializations,
-#          'specialization': specialization,
-#       'form': form,
-#      })
-
-
-    # AJAX POST submission
-    # if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-    #     form = BookingForm(request.POST, specialization=request.POST.get('specialization'))
-    #     if form.is_valid():
-    #         booking = form.save(commit=False)
-    #         booking.patient = request.user
-    #         booking.save()
-    #         return JsonResponse({'success': True})
-    #     else:
-    #         errors = [f"{k}: {v[0]}" for k, v in form.errors.items()]
-    #         return JsonResponse({'success': False, 'errors': errors})
-
-    # return render(request, 'patient/booking.html', {
-    #     'specializations': specializations,
-    #     'specialization': specialization,
-    #     'form': form,
-    # })
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from .models import Booking
+from doctor.models import Doctor
+from .forms import BookingForm
 
 @login_required
 def booking(request):
     if request.method == "POST" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        # handle booking save via AJAX
+        # Handle booking save via AJAX
         doctor_id = request.POST.get('doctor')
-        doctor = Doctor.objects.get(id=doctor_id)
+        doctor = Doctor.objects.get(id=doctor_id) if doctor_id else None
 
         date = request.POST.get('date')
         time = request.POST.get('time')
         reason = request.POST.get('reason')
+        patient_full_name = request.POST.get('patient_full_name')  # <-- get from form
 
-        if not (doctor_id and date and time and reason):
+        # Validate fields
+        if not (doctor and date and time and reason and patient_full_name):
             return JsonResponse({"errors": ["All fields are required"]})
 
         try:
@@ -189,7 +135,8 @@ def booking(request):
                 doctor=doctor,
                 date=date,
                 time=time,
-                reason=reason
+                reason=reason,
+                patient_full_name=patient_full_name  # <-- save full name
             )
             booking.save()
             return JsonResponse({"success": True})
@@ -205,6 +152,8 @@ def booking(request):
         doctors = Doctor.objects.filter(specialization=specialization)
         form = BookingForm()
         form.fields['doctor'].queryset = doctors
+        # Prefill patient_full_name
+        form.fields['patient_full_name'].initial = request.user.get_full_name()
 
     return render(request, 'patient/booking.html', {
         "form": form,

@@ -5,7 +5,7 @@ from doctor.models import Doctor
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
-        fields = ['doctor', 'date', 'time', 'reason']
+        fields = ['doctor', 'date', 'time', 'reason', 'patient_full_name']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'time': forms.TimeInput(attrs={'type': 'time'}),

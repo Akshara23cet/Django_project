@@ -1,32 +1,30 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Doctor Profile</title>
-    <!-- Using Tailwind CSS for utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
-        /* CSS Variables imported from Dashboard */
         :root {
-            --primary-color: #0d6efd; /* Bootstrap Blue */
-            --secondary-color: #0b5ed7; /* Darker Blue */
-            --accent-color: #28a745; /* Green */
+            --primary-color: #0d6efd;
+            --secondary-color: #0b5ed7;
+            --accent-color: #28a745;
         }
-        
+
         body {
-            background-color: #f0f4f8; /* Light gray background, matching dashboard */
+            background-color: #f0f4f8;
             font-family: 'Inter', sans-serif;
         }
 
-        /* General Info Box Styling, matching card-stats from dashboard */
         .info-box {
             background: #fff;
             border-radius: 12px;
-            padding: 24px; /* Increased padding */
+            padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Softer shadow */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             border: none;
         }
 
@@ -35,13 +33,25 @@
             width: 120px;
             height: 120px;
             object-fit: cover;
-            border-radius: 50%; /* Changed to circle for typical profile image */
+            border-radius: 50%;
             border: 4px solid var(--primary-color);
+            /* Removed vertical margins here to control spacing via the flex container */
+        }
+
+        /* 💡 NEW: Custom style for the inline profile text container */
+        .profile-text-inline {
+            text-align: left; /* Text aligns to the left of its container */
         }
         
-        /* Style for the Download VCard Button */
+        /* 💡 NEW: Style for the "Verified Practitioner" badge to reduce vertical margin */
+        .verified-badge {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            margin-top: 5px; /* Fine-tune vertical position */
+        }
+
         .btn-download {
-            background: var(--accent-color); /* Use accent color for button */
+            background: var(--accent-color);
             color: white;
             border-radius: 8px;
             text-decoration: none;
@@ -51,68 +61,57 @@
             transition: background 0.3s;
         }
         .btn-download:hover {
-            background: #218838; /* Slightly darker green on hover */
+            background: #218838;
             color: white;
         }
-
-        /* Style for the Price List Boxes */
-        .price-list {
+        
+        .btn-dashboard-back {
             background: var(--primary-color);
             color: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            height: 100%; /* Ensure both price boxes are same height */
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.3s;
         }
-        .price-list h5 {
-            font-weight: 700;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
+        .btn-dashboard-back:hover {
+            background: var(--secondary-color);
+            color: white;
         }
-        .price-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            font-weight: 500;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .price-item span:last-child {
-            font-weight: 700;
-        }
-        .expertise-list {
-            list-style: none;
-            padding-left: 0;
-        }
-        .expertise-list li {
-            background-color: #f8f9fa; /* Light background for list items */
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            border-left: 4px solid var(--primary-color);
-            font-weight: 500;
-        }
-
     </style>
 </head>
 <body>
 <div class="container mt-5">
-    <h2 class="text-3xl font-bold mb-6" style="color: #343a40;">Doctor Profile Overview</h2>
+    
+    <div class="d-flex justify-content-between align-items-center mb-6">
+        <h2 class="text-3xl font-bold" style="color: #343a40;">Doctor Profile Overview</h2>
+        <a href="{% url 'doctor_dashboard' %}" class="btn-dashboard-back">
+            ← Back to Dashboard
+        </a>
+    </div>
+    
     <div class="row">
-        <!-- Left Column -->
         <div class="col-md-4">
-            <div class="info-box text-center">
-                <img src="https://placehold.co/120x120/0d6efd/ffffff?text=DR" alt="Doctor" class="profile-img mb-3">
-                <h4 class="font-semibold mt-3" style="color: var(--primary-color);">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h4>
-                <p class="text-gray-600"><strong>{{ doctor.specialization }}</strong></p>
-                <span class="badge bg-success p-2 mt-2">Verified Practitioner</span>
-            </div>
+            <div class="info-box"> 
+                
+                <div class="d-flex flex-column align-items-center justify-content-center">
+                    
+                    <div class="d-flex align-items-center">
+                        <img src="https://placehold.co/120x120/0d6efd/ffffff?text=DR" alt="Doctor" class="profile-img me-4">
+                        
+                        <div class="profile-text-inline">
+                            <h4 class="font-semibold mb-1" style="color: var(--primary-color);">Dr. {{ request.user.username }}</h4>
+                            <p class="text-gray-600 mb-0"><strong>{{ doctor.specialization }}</strong></p>
+                            <span class="badge bg-success verified-badge">Verified Practitioner</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
 
             <div class="info-box">
                 <h5 class="mb-3 font-semibold" style="color: #495057;">Contact Information</h5>
                 <p class="mb-1 text-sm"><strong>Phone:</strong> +91-9876543210</p>
-                <p class="mb-1 text-sm"><strong>Email:</strong> {{ doctor.user.email }}</p>
+                <p class="mb-1 text-sm"><strong>Email:</strong> {{ request.user.email }}</p>
                 <p class="mb-1 text-sm"><strong>Degree:</strong> M.D. of Medicine</p>
                 <p class="mb-1 text-sm"><strong>University:</strong> Harvard University</p>
             </div>
@@ -122,52 +121,28 @@
                 <p class="mb-1 text-sm">Mon - Thu: <strong class="float-end">09:30 - 21:00</strong></p>
                 <p class="mb-1 text-sm">Friday: <strong class="float-end">10:00 - 20:00</strong></p>
                 <p class="mb-3 text-sm">Saturday: <strong class="float-end">10:00 - 15:00</strong></p>
-                <a href="#" class="btn-download">Download Doctor VCard</a>
+                <a href="#" class="btn-download">Download Doctor Card</a>
             </div>
         </div>
 
-        <!-- Right Column -->
         <div class="col-md-8">
             <div class="info-box">
                 <h4 class="mb-3 font-semibold" style="color: #495057;">Biography</h4>
-                <p class="text-gray-700">Dr. {{ doctor.user.last_name }} is a renowned specialist with over 15 years of experience in complex medical procedures. He is dedicated to patient-centered care, employing the latest research and technologies to achieve optimal health outcomes. He is an active member of several professional medical associations.</p>
-            </div>
-
-            <div class="info-box">
-                <h4 class="mb-3 font-semibold" style="color: #495057;">Areas of Expertise</h4>
-                <ul class="row expertise-list">
-                    <li class="col-md-6">Heart Surgery</li>
-                    <li class="col-md-6">Cardiac Electrophysiology</li>
-                    <li class="col-md-6">Nuclear Cardiology</li>
-                    <li class="col-md-6">Neurocritical Care</li>
-                </ul>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="price-list">
-                        <h5>Investigations Price List</h5>
-                        <div class="price-item"><span>Umbilical Cord Appearance</span><span>$25</span></div>
-                        <div class="price-item"><span>Cardiac Electrophysiology</span><span>$30</span></div>
-                        <div class="price-item"><span>Genetics Neurology</span><span>$50</span></div>
-                        <div class="price-item"><span>Nuclear Cardiology</span><span>$70</span></div>
-                        <div class="price-item"><span>Neurocritical Care</span><span>$90</span></div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="price-list">
-                        <h5>Treatments Price List</h5>
-                        <div class="price-item"><span>Colonoscopy</span><span>$60</span></div>
-                        <div class="price-item"><span>Allergy Testing</span><span>$70</span></div>
-                        <div class="price-item"><span>Gastroenterology</span><span>$100</span></div>
-                        <div class="price-item"><span>Cardiac Ablation</span><span>$80</span></div>
-                        <div class="price-item"><span>Holter Monitoring</span><span>$120</span></div>
-                    </div>
-                </div>
+                <p class="text-gray-700">Dr. {{ request.user.username }} is a renowned specialist with over 15 years of experience in complex medical procedures. He is dedicated to patient-centered care, employing the latest research and technologies to achieve optimal health outcomes. He is an active member of several professional medical associations.</p>
             </div>
         </div>
     </div>
+
 </div>
+<img src="{% static 'images/docgraph.jpg' %}" 
+    alt="Decorative" 
+    style="position: fixed; bottom: 130px; right: 500px; width: 500px; height: 400px; opacity:2; z-index: 0;">
+<img src="{% static 'images/docgrh2.jpg' %}" 
+    alt="Decorative" 
+    style="position: fixed; bottom: 130px; right: 10px; width: 450px; height: 200px; opacity:2; z-index: 0;">
+<img src="{% static 'images/docgrh1.jpg' %}" 
+    alt="Decorative" 
+    style="position: fixed; bottom: 355px; right: 10px; width: 450px; height: 175px; opacity:2; z-index: 0;">
+
 </body>
 </html>

@@ -1,23 +1,33 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Doctor Dashboard</title>
-    <!-- Using Tailwind CSS for modern aesthetics and utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0d6efd; /* Bootstrap Blue */
+            --primary-color: #003153; /* Bootstrap Blue */
             --secondary-color: #0b5ed7; /* Darker Blue */
             --accent-color: #28a745; /* Green */
         }
         body {
-            background-color: #f0f4f8; /* Light gray background */
+            /* 💡 CHANGED: Removed background-color to allow image to show. */
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
+            
+            /* 💡 ADDED: Background image properties for sizing and position */
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            
+            /* Optional: Add a subtle overlay to help content stand out against a complex background image */
+            /* background-color: rgba(240, 244, 248, 0.9); */ 
+            /* background-blend-mode: overlay; */
         }
         .sidebar {
             height: 100vh;
@@ -89,28 +99,47 @@
         }
     </style>
 </head>
-<body>
+<body style="background-image: url('{% static 'images/doctor.jpg' %}');">
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar (col-md-2) -->
         <div class="col-md-2 sidebar">
             <div class="profile-box">
                 <img src="https://placehold.co/80x80/ffffff/0d6efd?text=DR" alt="Doctor">
-                <h5>Dr. {{ doctor.user.username }}</h5>
+                <h5>Dr. {{ request.user.username }}</h5>
                 <p style="font-size: 0.85rem; opacity: 0.8;">{{ doctor.specialization }}</p>
             </div>
-            <!-- Navigation Links -->
             <a href="{% url 'doctor_dashboard' %}" class="active-link" style="background: rgba(255, 255, 255, 0.2); font-weight: 600;">Dashboard</a>
             <a href="{% url 'doctor_profile' %}">Profile</a>
             <a href="{% url 'doctor_appointments' %}">Appointments</a>
-            <a href="{% url 'doctor_logout' %}">Logout</a>
+           <form method="post" action="{% url 'logout' %}" style="display: block; margin-top: 20px;"> 
+                {% csrf_token %}
+                <button type="submit" style="
+                    all: unset; /* Removes all default button styling */
+                    cursor: pointer;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 20px;
+                    text-decoration: none;
+                    margin: 8px 10px;
+                    border-radius: 8px;
+                    transition: background 0.3s, transform 0.1s;
+                    font-weight: 500;
+                    width: 90%; /* Ensures it fills the container like the links */
+                    justify-content: start; /* Aligns text to the left */
+                " 
+                onmouseover="this.style.background='var(--secondary-color)'; this.style.transform='translateX(5px)'"
+                onmouseout="this.style.background='none'; this.style.transform='none'"
+                onmousedown="this.style.background='rgba(0, 0, 0, 0.2)'"
+                onmouseup="this.style.background='var(--secondary-color)'">
+                    Logout
+                </button>
+            </form>
         </div>
 
-        <!-- Main Content (col-md-10) -->
         <div class="col-md-10 p-4 main-content">
-            <h2 class="text-3xl font-bold mb-4" style="color: #343a40;">Doctor Dashboard</h2>
+            <h2 class="text-3xl font-bold mb-4" style="color: #b0d4f8ff;">Doctor Dashboard</h2>
             
-            <!-- Statistic Cards Section -->
             <div class="row mt-4">
                 <div class="col-md-4 mb-4">
                     <div class="card-stats text-center p-4">
@@ -132,7 +161,6 @@
                 </div>
             </div>
 
-            <!-- Patient History Table Section -->
             <div class="card mt-4 p-4 card-stats">
                 <h5 class="mb-3 text-lg font-semibold" style="color: #495057;">Patient History</h5>
                 {% if patients %}

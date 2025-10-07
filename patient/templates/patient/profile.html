@@ -1,21 +1,145 @@
 {% extends 'patient/base.html' %}
+{% load static %} {# Ensure 'static' is loaded if not in base.html #}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>My Profile</h2>
-    <hr>
+<style>
+    body {
+        background-image: url("{% static 'images/patient.jpg' %}"); /* Replace with your image path */
+        background-size: cover; /* Cover the entire page */
+        background-position: center center; /* Center the image */
+        background-repeat: no-repeat; /* Do not repeat the image */
+        background-attachment: fixed; /* Keep the background fixed during scroll */
+    }
+    /* Optional: Add a semi-transparent overlay to improve text readability */
+    .container {
+        position: relative; /* Needed for z-index to work */
+        z-index: 1; /* Ensure container is above the overlay */
+        /* background-color should already be set on the container itself for its content */
+    }
+    /* If you want a slight overlay behind your main content to make it pop more */
+    .content-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.6); /* White with 60% opacity */
+        z-index: 0; /* Place it behind the container's content */
+        border-radius: 15px; /* Match the container's border-radius */
+    }
+</style>
 
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Personal Information</h5>
-            <p><strong>Full Name:</strong> {{ request.user.username }}</p>
-            <p><strong>Email:</strong> {{ request.user.email }}</p>
-            <p><strong>Role:</strong> {{ request.user.role|title }}</p>
-            <p><strong>Gender:</strong> {{ request.user.patient.get_gender_display }}</p>
-            <p><strong>Phone:</strong> {{ request.user.patient.phone_number }}</p>
+<div class="container mt-5 mb-5" style="background-color: rgba(38, 59, 137, 0.3); border-radius: 15px; max-width: 800px; min-height:650px; ">
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="d-flex flex-column align-items-center mb-4">
+                <h2 class="fw-bold" style="font-family: 'Inter', sans-serif; font-size: 2.5rem;">Patient Profile</h2>    
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0" style="font-family: 'Inter', sans-serif;">Personal Information</h5>
+                </div>
+                <div class="card-body" style="font-family: 'Inter', sans-serif; font-size: 0.95rem;">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <strong>Full Name:</strong> {{ request.user.username }}
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Hospital ID:</strong> HOSP-123456
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <strong>Email:</strong> {{ request.user.email }}
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Role:</strong> {{ request.user.role|title }}
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <strong>Gender:</strong> {{ request.user.patient.get_gender_display }}
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Date of Birth:</strong> 15 Aug 1990
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <strong>Phone:</strong> {{ request.user.patient.phone_number }}
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Blood Group:</strong> B+
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <strong>Address:</strong> 123, Blue Street, Cityville, Country
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 mt-3">
+                            <strong>Emergency Contact:</strong> +91 9876543210
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0" style="font-family: 'Inter', sans-serif;">Medical Information</h5>
+                </div>
+                <div class="card-body" style="font-family: 'Inter', sans-serif; font-size: 0.95rem;">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <strong>Allergies:</strong> None
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Current Medications:</strong> Multivitamins
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <strong>Blood Pressure:</strong> 120/80 mmHg
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Height:</strong> 5'6"
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong>Weight:</strong> 65 kg
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Last Visit:</strong> 05 Oct 2025
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="#" class="btn btn-primary btn-lg me-2 justify-content: center" style="font-family: 'Inter', sans-serif;">Edit Profile</a>
+            </div>
+
         </div>
     </div>
-
-   
 </div>
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+    .card-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+    .avatar img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+    }
+</style>
 {% endblock %}
